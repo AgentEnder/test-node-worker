@@ -1,0 +1,21 @@
+{
+  "name": "test-daemon-worker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.14.6",
+    "typescript": "^5.5.2"
+  },
+  "dependencies": {
+    "chalk": "3",
+    "tmp": "^0.2.3",
+    "why-is-node-running": "^2.2.2"
+  }
+}
