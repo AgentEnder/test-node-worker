@@ -3,10 +3,10 @@ const { resolve } = require("path");
 
 const isWindows = process.platform === "win32";
 
-const getFullOsSocketPath = () =>
+const getFullOsSocketPath = (id) =>
   isWindows
-    ? "\\\\.\\pipe\\nx\\" + resolve(tmpdir() + "\\worker.sock")
-    : resolve(tmpdir() + "/worker.sock");
+    ? "\\\\.\\pipe\\nx\\" + resolve(tmpdir() + `\\worker${id}.sock`)
+    : resolve(tmpdir() + `/worker${id}.sock`);
 
 function consumeMessagesFromSocket(callback) {
   let message = "";
@@ -59,6 +59,14 @@ function writeMessageToSocket(socket, message) {
   socket.write(String.fromCharCode(4));
 }
 
+function makeLargeJson(maxDepth, depth = 0) {
+  const obj = {};
+  for (let i = 0; i < 5; i++) {
+    obj[i] = depth < maxDepth ? makeLargeJson(maxDepth, depth + 1) : i;
+  }
+  return obj;
+}
+
 module.exports = {
   isWindows,
   getFullOsSocketPath,
@@ -66,4 +74,5 @@ module.exports = {
   writeMessageToSocket,
   getFullOsSocketPath,
   connectToSocket,
+  makeLargeJson,
 };

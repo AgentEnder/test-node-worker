@@ -4,16 +4,11 @@ const {
   getFullOsSocketPath,
   consumeMessagesFromSocket,
   writeMessageToSocket,
+  makeLargeJson,
 } = require("./socket-utils");
 
-console.log("Hello from worker");
-
-const interval = setInterval(() => {
-  console.log("Worker is working");
-}, 500);
-
 const exitHandler = (signal) => () => {
-  console.log("Exiting worker, recieved:", signal);
+  // console.log("Exiting worker, recieved:", signal);
   server.close();
   process.exit(0);
 };
@@ -26,19 +21,22 @@ const server = require("net").createServer((socket) => {
   socket.on(
     "data",
     consumeMessagesFromSocket((message) => {
-      console.log("Server received message:", message);
-      writeMessageToSocket(socket, { message: "Hello from worker" });
+      console.log("Server received message.", message);
+      writeMessageToSocket(socket, {
+        message: "Hello from worker",
+        data: makeLargeJson(4),
+      });
     })
   );
 });
 
-const socketPath = getFullOsSocketPath();
+const socketPath = process.env.SOCKET_PATH;
 try {
   mkdirSync(dirname(socketPath), { recursive: true });
 } catch {}
 
-server.listen(getFullOsSocketPath());
+server.listen(socketPath);
 
 setTimeout(() => {
   process.exit(0);
-}, 5000);
+}, 10000);
